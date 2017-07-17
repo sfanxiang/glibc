@@ -9,6 +9,12 @@ Version 2.27
 
 Major new features:
 
+* Add --enable-static-pie configure option to build static PIE.  The
+  resulting libc.a can be used with the GCC option, -static-pie, which
+  is available with GCC 8 or above, to create static position independent
+  executable (static PIE).  Only i686, x86-64 and x32 targets are verified
+  to work.
+
 * Optimized x86-64 asin, atan2, exp, expf, log, pow, atan, sin and tan
   with FMA, contributed by Arjan van de Ven and H.J. Lu from Intel.
 

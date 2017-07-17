@@ -120,6 +120,14 @@ Don't build shared libraries even if it is possible.  Not all systems
 support shared libraries; you need ELF support and (currently) the GNU
 linker.
 
+@item --enable-static-pie
+Build static executables, including tests, as position independent
+executable (static PIE) which is similar to static executable, but can
+be loaded at any address without help from a dynamic linker.  The
+resulting libc.a can be used with the GCC option, -static-pie, which
+is available with GCC 8 or above, to create static PIE.  Only i686, x86-64
+and x32 targets are verified to work.
+
 @item --disable-profile
 Don't build libraries with profiling information.  You may want to use
 this option if you don't plan to do profiling.

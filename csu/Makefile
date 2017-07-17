@@ -37,7 +37,8 @@ extra-objs = start.o \
 	     S$(start-installed-name)
 omit-deps = $(patsubst %.o,%,$(start-installed-name) g$(start-installed-name) \
 			     b$(start-installed-name) $(csu-dummies) \
-			     S$(start-installed-name))
+			     S$(start-installed-name) \
+			     P$(start-installed-name))
 install-lib = $(start-installed-name) g$(start-installed-name) $(csu-dummies)
 
 # No tests are allowed in the csu/ subdirectory because the startup
@@ -55,6 +56,10 @@ extra-objs += gmon-start.o
 endif
 install-lib += S$(start-installed-name)
 generated += start.os
+ifeq (yes,$(enable-static-pie))
+extra-objs += P$(start-installed-name)
+install-lib += P$(start-installed-name)
+endif
 else
 extra-objs += gmon-start.o
 endif
@@ -77,7 +82,10 @@ crtstuff = crti crtn
 install-lib += $(crtstuff:=.o)
 extra-objs += $(crtstuff:=.o)
 
-extra-objs += abi-note.o init.o
+extra-objs += abi-note.o init.o static-reloc.o
+ifeq (yes,$(build-shared))
+extra-objs += static-reloc.os
+endif
 asm-CPPFLAGS += -I$(objpfx).
 
 # Enable unwinding so backtrace unwinds to __libc_start_main
@@ -96,6 +104,9 @@ ifndef start-installed-name-rule
 # We link the ELF startfile along with a SHT_NOTE section indicating
 # the kernel ABI the binaries linked with this library will require.
 $(objpfx)$(start-installed-name): $(objpfx)start.o $(objpfx)abi-note.o \
+				  $(objpfx)init.o $(objpfx)static-reloc.o
+	$(link-relocatable)
+$(objpfx)P$(start-installed-name): $(objpfx)start.o $(objpfx)abi-note.o \
 				  $(objpfx)init.o
 	$(link-relocatable)
 $(objpfx)S$(start-installed-name): $(objpfx)start.os $(objpfx)abi-note.o \
@@ -108,7 +119,7 @@ endif
 # to turn on profiling code at startup.
 ifeq (yes,$(build-shared))
 $(objpfx)g$(start-installed-name): \
-  $(objpfx)g%: $(objpfx)S% $(objpfx)gmon-start.os
+  $(objpfx)g%: $(objpfx)S% $(objpfx)gmon-start.os $(objpfx)static-reloc.os
 	$(link-relocatable)
 ifneq ($(start-installed-name),$(static-start-installed-name))
 $(objpfx)g$(static-start-installed-name): \
