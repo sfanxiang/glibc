@@ -60,7 +60,7 @@ _start:
 	/* Setup stack limit in argument register */
 	mov	x6, sp
 
-#ifdef SHARED
+#ifdef PIC
         adrp    x0, :got:main
 	ldr     PTR_REG (0), [x0, #:got_lo12:main]
 
