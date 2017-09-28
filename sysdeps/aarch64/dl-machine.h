@@ -61,6 +61,7 @@ elf_machine_load_address (void)
   ElfW(Addr) static_addr;
   ElfW(Addr) dynamic_addr;
 
+#ifdef SHARED
   asm ("					\n"
 "	adrp	%1, _dl_start;			\n"
 #ifdef __LP64__
@@ -84,6 +85,31 @@ elf_machine_load_address (void)
 #endif
 "2:						\n"
     : "=r" (static_addr),  "=r" (dynamic_addr));
+#else
+  asm ("						\n"
+"	adrp	%1, _dl_relocate_static_pie;		\n"
+#ifdef __LP64__
+"	add	%1, %1, #:lo12:_dl_relocate_static_pie	\n"
+#else
+"	add	%w1, %w1, #:lo12:_dl_relocate_static_pie\n"
+#endif
+"	ldr	%w0, 1f					\n"
+"	b	2f					\n"
+"1:							\n"
+#ifdef __LP64__
+"	.word	_dl_relocate_static_pie			\n"
+#else
+# ifdef __AARCH64EB__
+"	.short  0                               	\n"
+# endif
+"	.short  _dl_relocate_static_pie                 \n"
+# ifndef __AARCH64EB__
+"	.short  0                               	\n"
+# endif
+#endif
+"2:						\n"
+    : "=r" (static_addr),  "=r" (dynamic_addr));
+#endif
   return dynamic_addr - static_addr;
 }
 
