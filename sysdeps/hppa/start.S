@@ -42,7 +42,7 @@
 	/* Have the linker create plabel words so we get PLABEL32
 	   relocs and not 21/14.  The use of 21/14 relocs is only
 	   supported in the latest dynamic linker.  */
-#ifdef SHARED
+#ifdef PIC
 	.section	.data.rel.ro,"aw",@progbits
 #else
 	.section	.rodata,"a",@progbits
@@ -56,7 +56,7 @@
 	.word P%__libc_csu_fini
 .Lp__libc_csu_init:
 	.word P%__libc_csu_init
-#ifdef SHARED
+#ifdef PIC
 .Lp__global:
 	.word $global$
 #endif
@@ -101,7 +101,7 @@ _start:
 	stw	%r23, -56(%sp)
 	/* Need to setup 1, 4, 5, and 7th arguments */
 
-#ifdef SHARED
+#ifdef PIC
 	/* load main (1st argument) */
 	addil	LT'.Lpmain, %r19
 	ldw	RT'.Lpmain(%r1), %r26
@@ -130,7 +130,7 @@ _start:
 	/* void *stack_end (7th argument) */
 	stw	%sp, -60(%sp)
 
-#ifdef SHARED
+#ifdef PIC
 	/* load global */
 	addil	LT'.Lp__global, %r19
 	ldw	RT'.Lp__global(%r1), %dp
