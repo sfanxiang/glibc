@@ -1,3 +1,10 @@
+2017-10-17  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
+
+	* configure.ac (multi_arch): Use 'yes' as default value.
+	(libc_cv_gcc_incompatbile_alias): New define: indicates whether
+	compiler emits an warning for alias for functions with
+	incompatible types.
+
 2017-10-17  Romain Naour  <romain.naour@gmail.com>  (tiny change)
 
 	[BZ #22296]

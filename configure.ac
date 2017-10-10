@@ -304,7 +304,7 @@ AC_ARG_ENABLE([multi-arch],
 	      AC_HELP_STRING([--enable-multi-arch],
 			     [enable single DSO with optimizations for multiple architectures]),
 	      [multi_arch=$enableval],
-	      [multi_arch=default])
+	      [multi_arch=yes])
 
 AC_ARG_ENABLE([experimental-malloc],
 	      AC_HELP_STRING([--disable-experimental-malloc],
@@ -634,6 +634,26 @@ if ${CC-cc} -c conftest.c -o conftest.o 1>&AS_MESSAGE_LOG_FD \
 fi
 rm -f conftest*])
 
+# Check if gcc warns about alias for function with incompatible types.
+AC_CACHE_CHECK([if compiler warns about alias for function with incompatible types],
+	       libc_cv_gcc_incompatible_alias, [dnl
+cat > conftest.c <<EOF
+int __redirect_foo (const void *s, int c);
+
+__typeof (__redirect_foo) *foo_impl (void) __asm__ ("foo");
+__typeof (__redirect_foo) *foo_impl (void)
+{
+  return 0;
+}
+
+extern __typeof (__redirect_foo) foo_alias __attribute__ ((alias ("foo")));
+EOF
+libc_cv_gcc_incompatible_alias=yes
+if ${CC-cc} -Werror -c conftest.c -o conftest.o 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+  libc_cv_gcc_incompatible_alias=no
+fi
+rm -f conftest*])
+
 if test x"$libc_cv_ld_gnu_indirect_function" != xyes; then
   if test x"$multi_arch" = xyes; then
     AC_MSG_ERROR([--enable-multi-arch support requires assembler and linker support])
@@ -645,6 +665,14 @@ if test x"$libc_cv_gcc_indirect_function" != xyes &&
    test x"$multi_arch" = xyes; then
   AC_MSG_WARN([--enable-multi-arch support recommends a gcc with gnu-indirect-function support.
 Please use a gcc which supports it by default or configure gcc with --enable-gnu-indirect-function])
+  # GCC 8+ emits and warning for alias with incompatible types and it might
+  # fail to to build ifunc resolvers aliases to either weak or internal
+  # symbols.  Disables multiarch build in this case.
+  if test x"$libc_cv_gcc_incompatible_alias" == xyes; then
+    AC_MSG_WARN([gcc emits a warning for alias between functions of incompatible types.
+Multi-arch is disabled. ])
+    multi_arch=no
+  fi
 fi
 multi_arch_d=
 if test x"$multi_arch" != xno; then
