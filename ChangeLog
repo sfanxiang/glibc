@@ -1,5 +1,10 @@
 2017-10-17  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
 
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_trunc.c (__trunc_vis3,
+	__trunc_generic): Use attribute_hidden.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_truncf.c (__truncf_vis3,
+	__truncf_generic): Likewise.
+
 	* sysdeps/sparc/sparc64/fpu/multiarch/s_fma.c (__fma_vis3,
 	__ceil_generic): Use attribute_hidden.
 	* sysdeps/sparc/sparc64/fpu/multiarch/s_fmaf.c (__fmaf_vis3,
