@@ -1,5 +1,10 @@
 2017-10-17  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
 
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_floor.c (__floor_vis3,
+	__ceil_generic): Use attribute_hidden.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_floorf.c (__floorf_vis3,
+	__ceilf_generic): Likewise.
+
 	* sysdeps/sparc/sparc64/fpu/multiarch/s_ceil.c (__ceil_vis3,
 	__ceil_generic): Use attribute_hidden.
 	* sysdeps/sparc/sparc64/fpu/multiarch/s_ceilf.c (__ceilf_vis3,
