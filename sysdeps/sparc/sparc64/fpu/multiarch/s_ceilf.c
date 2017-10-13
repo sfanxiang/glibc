@@ -19,8 +19,11 @@
 #include <sparc-ifunc.h>
 #include <math.h>
 
-extern float __ceilf_vis3 (float);
-extern float __ceilf_generic (float);
+extern __typeof (ceilf) __ceilf_vis3 attribute_hidden;
+extern __typeof (ceilf) __ceilf_generic attribute_hidden;
 
-sparc_libm_ifunc(__ceilf, hwcap & HWCAP_SPARC_VIS3 ? __ceilf_vis3 : __ceilf_generic);
+sparc_libm_ifunc (__ceilf,
+		  hwcap & HWCAP_SPARC_VIS3
+		  ? __ceilf_vis3
+		  : __ceilf_generic);
 weak_alias (__ceilf, ceilf)
