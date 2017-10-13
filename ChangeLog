@@ -1,5 +1,17 @@
 2017-10-17  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
 
+	* sysdeps/sparc/sparc64/fpu/multiarch/Makefile (sysdep_calls): New
+	rule.
+	(sysdep_routines): Use sysdep_calls as base.
+	(libm-sysdep_routines): Add generic rule for symbols shared with
+	libc.  Add s_signbit-generic and s_signbitf-generic objects.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbit.c: New file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbitf.c: Likewise.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbit-generic.S: Likewise.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbitf-generic.S: Likewise.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbit.S: Remove file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbitf.S: Likewise.
+
 	* sysdeps/sparc/sparc64/fpu/multiarch/s_trunc.c (__trunc_vis3,
 	__trunc_generic): Use attribute_hidden.
 	* sysdeps/sparc/sparc64/fpu/multiarch/s_truncf.c (__truncf_vis3,
